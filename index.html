@@ -3,22 +3,88 @@
   <head>
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+    <title>Twiddler</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
   </head>
-  <body>
-    <script>
 
+  <body>
+    <div class="header container">
+      <h1 class="bold">
+        <a href="index.html">Twiddler</a>
+      </h1>
+    </div>
+
+    <div class="tweetContainer">
+      <div id ="newTweets" class="navBar">Click for new Tweets</div>
+      <div id="home" class="navBar">Return Home</div>
+      <div class="listTweets"></div>
+    </div> 
+
+    <script>
       $(document).ready(function(){
-        var $body = $('body');
-        $body.html('');
+        var $listTweets = $('.listTweets');
+        //$body.html('');
 
         var index = streams.home.length - 1;
-        while(index >= 0){
-          var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
-          index -= 1;
+        
+        var tweets = function(user) {
+          if (user) {
+            var index = streams.users[user].length - 1;
+          } else {
+            var index = streams.home.length - 1;
+          } 
+
+          while(index >= 0) {
+            if (user) {
+              var tweet = streams.users[user][index];
+            } else {
+              var tweet = streams.home[index];
+            }
+            $singleTweet = $(
+              `<div class="tweet-box">
+                <div class="user">
+                  <a href="#" class="${tweet.user}">
+                    @${tweet.user}
+                  </a>
+                </div>
+                <div class="time">
+                  ${tweet.created_at}
+                </div>
+                <div class="message">
+                  ${tweet.message}
+                </div>
+              </div>`
+              )
+            
+            $singleTweet.appendTo($listTweets).hide().fadeIn("slow");
+            index -= 1;  
+          }
+          index = streams.home.length - 1;
         }
+
+        tweets();
+        $("#home").hide();
+
+        $('#newTweets').on('click', function () {
+          $("#home").hide();
+          $('.tweet-box').remove();
+          tweets();
+        });
+
+        $('.listTweets').on("click", 'a', function() {
+          $('.tweet-box').remove();
+          $('#newTweets').hide();
+          $('#home').show();
+          var user = this.getAttribute("class");
+          tweets(user)
+        })
+
+        $('#home').on("click", function() {
+          $('#home').hide();
+          $('.tweet-box').remove();
+          $('#newTweets').show();
+          tweets();
+        })
 
       });
 
