@@ -74,7 +74,7 @@
         $('.listTweets').on("click", 'a', function() {
           $('.tweet-box').remove();
           $('#newTweets').hide();
-          $('#home').show();
+          $('#home').show().fadeIn("slow");
           var user = this.getAttribute("class");
           tweets(user)
         })
@@ -82,7 +82,7 @@
         $('#home').on("click", function() {
           $('#home').hide();
           $('.tweet-box').remove();
-          $('#newTweets').show();
+          $('#newTweets').show().fadeIn("slow");
           tweets();
         })
 
